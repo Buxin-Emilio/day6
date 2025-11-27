@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>2025 暗黑科技商品列表</title>
+    <style>
+      /* =========================================
+           1. 全局变量与重置 (CSS Variables & Reset)
+           ========================================= */
+      :root {
+        --primary-color: #4361ee; /* 科技蓝主色 */
+        --primary-hover: #3046c4; /* 按钮悬停色 */
+        --bg-dark: #0f0f1a; /* 深邃暗黑背景 */
+        --card-bg: #ffffff; /* 白色卡片 */
+        --text-main: #1a1a2e; /* 卡片内深色文字 */
+        --text-sub: #888888; /* 辅助文字颜色 */
+        --text-light: #ffffff; /* 导航栏/按钮文字 */
+        --radius: 16px; /* 统一圆角 */
+        --glass-shadow: 0 8px 32px 0 rgba(67, 97, 238, 0.2); /* 科技感辉光阴影 */
+        --nav-height: 60px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent; /* 移除手机端点击高亮 */
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        color: var(--text-main);
+        padding-top: calc(var(--nav-height) + 20px); /* 为固定导航栏留出空间 */
+        padding-bottom: 40px;
+      }
+
+      /* =========================================
+           2. 顶部固定导航栏 (Fixed Navbar)
+           ========================================= */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: var(--nav-height);
+        background: rgba(15, 15, 26, 0.85); /* 半透明背景 */
+        backdrop-filter: blur(12px); /* 磨砂玻璃效果 */
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(67, 97, 238, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .nav-left,
+      .nav-right {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      /* SVG 图标样式 */
+      .icon {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .page-title {
+        color: var(--text-light);
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+
+      /* 购物车角标容器 */
+      .cart-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* 红色数字角标 */
+      .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #ff3b30;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        height: 16px;
+        min-width: 16px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+        border: 2px solid var(--bg-dark); /* 与背景融合形成切割感 */
+      }
+
+      /* =========================================
+           3. 商品网格布局 (Responsive Grid)
+           ========================================= */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      .product-grid {
+        display: grid;
+        gap: 16px;
+        /* 默认移动端：2列 */
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* 断点：平板及桌面端 (>= 768px) */
+      @media (min-width: 768px) {
+        .product-grid {
+          gap: 24px;
+          /* 平板：3列 */
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      /* 断点：大屏桌面 (>= 1024px) */
+      @media (min-width: 1024px) {
+        .product-grid {
+          /* 桌面：4列 (如果屏幕超宽可以设为5) */
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      /* 超大屏 */
+      @media (min-width: 1400px) {
+        .product-grid {
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+
+      /* =========================================
+           4. 商品卡片设计 (Product Card)
+           ========================================= */
+      .product-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        /* 科技感玻璃拟态阴影 - 在白色卡片周围产生蓝色辉光 */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+
+      .product-card:hover {
+        transform: translateY(-6px);
+        /* 悬停时辉光增强 */
+        box-shadow: var(--glass-shadow);
+      }
+
+      /* 图片容器 */
+      .img-wrapper {
+        width: 100%;
+        aspect-ratio: 1 / 1; /* 保持正方形 */
+        background: #f0f2f5;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .product-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .product-card:hover .product-img {
+        transform: scale(1.05); /* 图片轻微放大 */
+      }
+
+      /* 内容区域 */
+      .card-content {
+        padding: 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .product-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 8px;
+        line-height: 1.4;
+        /* 限制显示2行 */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+      }
+
+      .price-row {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 12px;
+        gap: 4px;
+      }
+
+      .currency {
+        font-size: 12px;
+        color: var(--primary-color);
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+
+      .price {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary-color);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      /* 加入购物车按钮 */
+      .btn-add-cart {
+        width: 100%;
+        padding: 10px 0;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary-color);
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-add-cart:hover {
+        background: var(--primary-hover);
+      }
+
+      .btn-add-cart:active {
+        transform: scale(0.98);
+      }
+
+      /* =========================================
+           5. 底部版权 (Footer)
+           ========================================= */
+      .footer {
+        margin-top: 40px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 12px;
+      }
+
+      /* 骨架屏占位图效果（为了在没有真实图片时也好看） */
+      .placeholder-bg {
+        background: linear-gradient(
+          135deg,
+          #e0e0e0 25%,
+          #f5f5f5 50%,
+          #e0e0e0 75%
+        );
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="nav-left" role="button" aria-label="返回">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+      </div>
+
+      <div class="page-title">商品列表</div>
+
+      <div class="nav-right" role="button" aria-label="购物车">
+        <div class="cart-container" id="cart-icon-wrapper">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="badge" id="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="product-grid" id="product-list-container">
+        <article class="product-card" data-id="p_001">
+          <div class="img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=500&q=80"
+              alt="量子降噪耳机"
+              class="product-img"
+            />
+          </div>
+          <div class="card-content">
+            <h3 class="product-title">量子降噪无线耳机 Pro / 极光银</h3>
+            <div class="price-row">
+              <span class="currency">¥</span>
+              <span class="price">1,299</span>
+            </div>
+            <button class="btn-add-cart" id="btn-p-001" data-sku="sku_1299">
+              加入购物车
+            </button>
+          </div>
+        </article>
+
+        <article class="product-card" data-id="p_002">
+          <div class="img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=500&q=80"
+              alt="全息智能手表"
+              class="product-img"
+            />
+          </div>
+          <div class="card-content">
+            <h3 class="product-title">Series 7 全息投影智能手表 / 碳纤维黑</h3>
+            <div class="price-row">
+              <span class="currency">¥</span>
+              <span class="price">2,499</span>
+            </div>
+            <button class="btn-add-cart" id="btn-p-002" data-sku="sku_2499">
+              加入购物车
+            </button>
+          </div>
+        </article>
+
+        <article class="product-card" data-id="p_003">
+          <div class="img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=500&q=80"
+              alt="机械键盘"
+              class="product-img"
+            />
+          </div>
+          <div class="card-content">
+            <h3 class="product-title">
+              CyberPunk 2025 机械键盘 / RGB 矩阵光效
+            </h3>
+            <div class="price-row">
+              <span class="currency">¥</span>
+              <span class="price">899</span>
+            </div>
+            <button class="btn-add-cart" id="btn-p-003" data-sku="sku_899">
+              加入购物车
+            </button>
+          </div>
+        </article>
+
+        <article class="product-card" data-id="p_004">
+          <div class="img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=500&q=80"
+              alt="便携式无人机"
+              class="product-img"
+            />
+          </div>
+          <div class="card-content">
+            <h3 class="product-title">Nano X 便携式跟拍无人机 / 4K 120帧</h3>
+            <div class="price-row">
+              <span class="currency">¥</span>
+              <span class="price">3,299</span>
+            </div>
+            <button class="btn-add-cart" id="btn-p-004" data-sku="sku_3299">
+              加入购物车
+            </button>
+          </div>
+        </article>
+
+        <article class="product-card" data-id="p_005">
+          <div class="img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=500&q=80"
+              alt="VR头显"
+              class="product-img"
+            />
+          </div>
+          <div class="card-content">
+            <h3 class="product-title">Vision One 沉浸式 VR 头显 / 8K 分辨率</h3>
+            <div class="price-row">
+              <span class="currency">¥</span>
+              <span class="price">4,599</span>
+            </div>
+            <button class="btn-add-cart" id="btn-p-005" data-sku="sku_4599">
+              加入购物车
+            </button>
+          </div>
+        </article>
+
+        <article class="product-card" data-id="p_006">
+          <div class="img-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80"
+              alt="智能音箱"
+              class="product-img"
+            />
+          </div>
+          <div class="card-content">
+            <h3 class="product-title">Echo Sphere 悬浮磁力蓝牙音箱</h3>
+            <div class="price-row">
+              <span class="currency">¥</span>
+              <span class="price">699</span>
+            </div>
+            <button class="btn-add-cart" id="btn-p-006" data-sku="sku_699">
+              加入购物车
+            </button>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 FutureTech Store. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
