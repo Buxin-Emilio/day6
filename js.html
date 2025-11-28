@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>练习js</title>
+  </head>
+  <body>
+    <h1>练习js</h1>
+    <form>
+      <label for="name">姓名：</label>
+      <input type="button" value="点我" onclick="alert('卧槽牛逼')" />
+      <!-- 在HtML中我们推荐使用双引号，JS中我们推荐使用单引号 -->
+      <script src="/script.js"></script>
+      <script src="/script2.js"></script>
+      <!-- 在HTML中引入JS文件，可以同时引入多个文件,但是要分别写出来 -->
+      <!-- 并且,引用外部js文件之后,这个script标签里面的js代码就作废了 ,除非再加一个新的script标签 -->
+      <script>
+        alert("瞧一瞧看一看");
+        这个代码会被执行;
+      </script>
+    </form>
+  </body>
+</html>
